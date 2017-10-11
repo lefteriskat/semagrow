@@ -24,7 +24,7 @@
     <modules>
         <module>commons</module>
         <module>core-api</module>
-        <module>monitor</module>
+        <!--module>monitor</module-->
         <module>core</module>
         <module>sparql</module>
         <module>rdf4j</module>
