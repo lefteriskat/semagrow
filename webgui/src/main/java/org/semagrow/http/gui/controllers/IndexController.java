@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class IndexController {
     
-    @Autowired
+    @Autowired(required=false)
     CsvCreator creator;
     
     @RequestMapping(value="/welcome", method=RequestMethod.GET)
