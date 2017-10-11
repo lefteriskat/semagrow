@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexController {
     
     @Autowired
-    CsvCreator creator = null;
+    CsvCreator creator;
     
     @RequestMapping(value="/welcome", method=RequestMethod.GET)
     public ModelAndView welcome(HttpServletResponse response) throws IOException{
