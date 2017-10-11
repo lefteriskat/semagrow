@@ -1,10 +1,10 @@
 package org.semagrow.http.gui.controllers;
 
-import org.semagrow.art.CsvCreator;
+//import org.semagrow.art.CsvCreator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class IndexController {
     
-    @Autowired(required=false)
-    CsvCreator creator;
+    /*@Autowired(required=false)
+    CsvCreator creator;*/
     
     @RequestMapping(value="/welcome", method=RequestMethod.GET)
     public ModelAndView welcome(HttpServletResponse response) throws IOException{
@@ -34,7 +34,7 @@ public class IndexController {
         return mav;
     }
 
-    @RequestMapping(value="/monitoring", method=RequestMethod.GET)
+    /*@RequestMapping(value="/monitoring", method=RequestMethod.GET)
     public void monitor(HttpServletResponse response) throws IOException{
 
         if(this.creator!=null){
@@ -47,5 +47,5 @@ public class IndexController {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         }
-    }
+    }*/
 }
