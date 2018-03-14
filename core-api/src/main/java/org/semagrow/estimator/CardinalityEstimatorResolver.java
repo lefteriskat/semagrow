@@ -18,5 +18,6 @@ public interface CardinalityEstimatorResolver {
      *         or nothing if there is nothing appropriate for the given {@code site}
      */
     Optional<CardinalityEstimator> resolve(Site site);
+    Optional<CardinalityEstimator> resolve(Site site,Integer metric);
 
 }

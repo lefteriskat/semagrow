@@ -26,4 +26,5 @@ public interface CardinalityEstimator {
      */
     BigInteger getCardinality(TupleExpr expr);
 
+
 }

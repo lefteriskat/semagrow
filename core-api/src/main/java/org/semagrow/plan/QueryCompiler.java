@@ -23,5 +23,6 @@ public interface QueryCompiler {
     * @return an executable query plan
     */
     Plan compile(QueryRoot query, Dataset dataset, BindingSet bindings);
+    Plan compile(QueryRoot query, Dataset dataset, BindingSet bindings,Integer metric);
 
 }

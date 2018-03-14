@@ -28,6 +28,16 @@ public class DefaultCompilerContext implements CompilerContext {
 
     private SourceSelector sourceSelector;
 
+    private Integer metric;
+
+    public DefaultCompilerContext(Integer metric){
+        this.metric = metric;
+    }
+
+    public DefaultCompilerContext(){
+        this.metric = 0;
+    }
+
     public CostEstimatorResolver getCostEstimatorResolver() { return costEstimatorResolver; }
 
     public void setCostEstimatorResolver(CostEstimatorResolver costEstimatorResolver) {
@@ -48,7 +58,7 @@ public class DefaultCompilerContext implements CompilerContext {
 
         Plan p = new Plan(physicalExpr);
 
-       PlanProperties props = PlanPropertiesUpdater.process(physicalExpr, initProps);
+        PlanProperties props = PlanPropertiesUpdater.process(physicalExpr, initProps);
 
         if (props.getSite() == null)
             props.setSite(LocalSite.getInstance());
@@ -57,11 +67,11 @@ public class DefaultCompilerContext implements CompilerContext {
             props.setDataProperties(new DataProperties());
 
         Site s = props.getSite();
-
-        cardinalityEstimatorResolver.resolve(s)
+        System.out.println("TELOS EDW");
+        cardinalityEstimatorResolver.resolve(s,metric)
                 .ifPresent(ce -> props.setCardinality(ce.getCardinality(physicalExpr)));
 
-        costEstimatorResolver.resolve(s)
+        costEstimatorResolver.resolve(s,metric)
                 .ifPresent(ce -> props.setCost(ce.getCost(physicalExpr)));
 
         p.setProperties(props);

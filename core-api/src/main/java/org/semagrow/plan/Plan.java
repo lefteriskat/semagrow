@@ -50,6 +50,7 @@ public class Plan extends UnaryTupleOperator {
 
     public String getSignature()
     {
+
         StringBuilder sb = new StringBuilder(128);
 
         sb.append(super.getSignature());

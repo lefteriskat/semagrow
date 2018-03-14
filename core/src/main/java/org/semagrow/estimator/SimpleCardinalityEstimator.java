@@ -8,6 +8,7 @@ import org.semagrow.plan.operators.SourceQuery;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.algebra.*;
 import org.eclipse.rdf4j.query.impl.EmptyBindingSet;
+import org.semagrow.statistics.StatsItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,6 +23,7 @@ public class SimpleCardinalityEstimator implements CardinalityEstimator {
     private CardinalityEstimatorResolver cardinalityEstimatorResolver;
     private SelectivityEstimator selectivityEstimator;
     private Statistics statistics;
+    private Integer metric;
 
     public SimpleCardinalityEstimator(CardinalityEstimatorResolver cardinalityEstimatorResolver,
                                       SelectivityEstimator selectivityEstimator,
@@ -30,6 +32,18 @@ public class SimpleCardinalityEstimator implements CardinalityEstimator {
         this.cardinalityEstimatorResolver = cardinalityEstimatorResolver;
         this.selectivityEstimator = selectivityEstimator;
         this.statistics = statistics;
+        metric=0;
+    }
+
+    public SimpleCardinalityEstimator(CardinalityEstimatorResolver cardinalityEstimatorResolver,
+                                      SelectivityEstimator selectivityEstimator,
+                                      Statistics statistics,
+                                      Integer metric)
+    {
+        this.cardinalityEstimatorResolver = cardinalityEstimatorResolver;
+        this.selectivityEstimator = selectivityEstimator;
+        this.statistics = statistics;
+        this.metric = metric;
     }
 
     @Loggable
@@ -69,7 +83,8 @@ public class SimpleCardinalityEstimator implements CardinalityEstimator {
     }
 
     public BigInteger getCardinality(StatementPattern pattern) {
-        return BigInteger.valueOf(statistics.getStats(pattern, EmptyBindingSet.getInstance()).getCardinality());
+        StatsItem statItem = statistics.getStats(pattern, EmptyBindingSet.getInstance());
+        return BigInteger.valueOf(statItem.getCardinality(metric));
     }
 
     public BigInteger getCardinality(Distinct distinct) {

@@ -374,9 +374,10 @@ public class SelectBlock extends AbstractQueryBlock {
             Collection<Predicate> predicates = getPredicates().stream()
                     .filter(p -> isRelevant(p, k))
                     .collect(Collectors.toList());
+            System.out.println("PREDICATES "+getPredicates().size());
 
             Collection<Plan> plans = q.getBlock().getPlans(context);
-
+            System.out.println(plans.size());
             // rename each plan variable with the representative variable of its equivalent class
             Map<String,String> varMap = q.getVariables().stream()
                     .collect(Collectors.toMap(v -> v.getName(), v -> repName(v)));

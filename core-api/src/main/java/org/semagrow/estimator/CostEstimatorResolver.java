@@ -19,4 +19,6 @@ public interface CostEstimatorResolver {
      */
     Optional<CostEstimator> resolve(Site site);
 
+    Optional<CostEstimator> resolve(Site site,Integer metric);
+
 }

@@ -41,6 +41,7 @@ public class SimpleQueryCompiler implements QueryCompiler {
     public Plan compile(QueryRoot query, Dataset dataset, BindingSet bindings) {
 
         // transformations on logical query.
+
         rewrite(query.getArg(), dataset, bindings);
 
         // split query to queryblocks.
@@ -58,6 +59,34 @@ public class SimpleQueryCompiler implements QueryCompiler {
 
         plans = getContext().enforceProps(plans, props);
         getContext().prune(plans);
+
+        if (plans.isEmpty())
+            return null;
+        else
+            return plans.iterator().next();
+    }
+
+    public Plan compile(QueryRoot query, Dataset dataset, BindingSet bindings,Integer metric) {
+
+        // transformations on logical query.
+
+        rewrite(query.getArg(), dataset, bindings);
+
+        // split query to queryblocks.
+        QueryBlock blockRoot = blockify(query, dataset, bindings);
+
+        // infer interesting properties for each query block.
+        blockRoot.visit(new InterestingPropertiesVisitor());     // infer interesting properties for each block
+
+        // traverse Blocks and compile them bottom-up.
+        Collection<Plan> plans = blockRoot.getPlans(getContext(metric));
+
+        // enforce Site = Local
+        RequestedPlanProperties props = new RequestedPlanProperties();
+        props.setSite(LocalSite.getInstance());
+
+        plans = getContext(metric).enforceProps(plans, props);
+        getContext(metric).prune(plans);
 
         if (plans.isEmpty())
             return null;
@@ -96,6 +125,14 @@ public class SimpleQueryCompiler implements QueryCompiler {
         );
 
         queryOptimizer.optimize(expr, dataset, bindings);
+    }
+
+    protected CompilerContext getContext(Integer metric) {
+        DefaultCompilerContext context = new DefaultCompilerContext(metric);
+        context.setCardinalityEstimatorResolver(cardinalityEstimatorResolver);
+        context.setCostEstimatorResolver(costEstimatorResolver);
+        context.setSourceSelector(sourceSelector);
+        return context;
     }
 
     protected CompilerContext getContext() {

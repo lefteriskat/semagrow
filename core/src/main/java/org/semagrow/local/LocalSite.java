@@ -18,7 +18,7 @@ public class LocalSite implements Site {
 
     private Resource id = SemagrowValueFactory.getInstance().createBNode();
 
-    protected LocalSite() { }
+    public LocalSite() { }
 
     public String getType() {
         return TYPE ;

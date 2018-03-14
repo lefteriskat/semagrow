@@ -7,6 +7,8 @@ public interface StatsItem {
 
     long getCardinality();
 
+    long getCardinality(int i);
+
     long getVarCardinality(String var);
 
 }

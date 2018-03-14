@@ -32,6 +32,12 @@ public final class VOID {
     public final static IRI ENTITIES;
     public final static IRI DISTINCTSUBJECTS;
     public final static IRI DISTINCTOBJECTS;
+    public final static IRI MINSUBJECTS;
+    public final static IRI MINPROPERTIES;
+    public final static IRI MINOBJECTS;
+    public final static IRI MAXSUBJECTS;
+    public final static IRI MAXPROPERTIES;
+    public final static IRI MAXOBJECTS;
     public final static IRI URIREGEXPATTERN;
     public final static IRI PROPERTY;
     public final static IRI CLASS;
@@ -51,6 +57,12 @@ public final class VOID {
         ENTITIES = factory.createIRI(VOID.NAMESPACE, "entities");
         DISTINCTSUBJECTS = factory.createIRI(VOID.NAMESPACE, "distinctSubjects");
         DISTINCTOBJECTS = factory.createIRI(VOID.NAMESPACE, "distinctObjects");
+        MINSUBJECTS = factory.createIRI(VOID.NAMESPACE, "minSubjects");
+        MINPROPERTIES = factory.createIRI(VOID.NAMESPACE, "minProperties");
+        MINOBJECTS = factory.createIRI(VOID.NAMESPACE, "minObjects");
+        MAXSUBJECTS = factory.createIRI(VOID.NAMESPACE, "maxSubjects");
+        MAXPROPERTIES = factory.createIRI(VOID.NAMESPACE, "maxProperties");
+        MAXOBJECTS = factory.createIRI(VOID.NAMESPACE, "maxObjects");
         URIREGEXPATTERN = factory.createIRI(VOID.NAMESPACE, "uriRegexPattern");
         PROPERTY = factory.createIRI(VOID.NAMESPACE, "property");
         CLASS = factory.createIRI(VOID.NAMESPACE, "class");

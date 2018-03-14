@@ -20,4 +20,10 @@ public class SimpleCostEstimatorResolver implements CostEstimatorResolver {
         return cardinalityEstimatorResolver.resolve(site)
                 .map(c -> new SimpleCostEstimator(this, c));
     }
+
+    @Override
+    public Optional<CostEstimator> resolve(Site site,Integer metric) {
+        return cardinalityEstimatorResolver.resolve(site,metric)
+                .map(c -> new SimpleCostEstimator(this, c));
+    }
 }

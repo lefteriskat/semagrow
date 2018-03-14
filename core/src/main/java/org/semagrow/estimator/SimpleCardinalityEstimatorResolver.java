@@ -25,4 +25,10 @@ public class SimpleCardinalityEstimatorResolver implements CardinalityEstimatorR
                                         .map(stats -> new SimpleCardinalityEstimator(this, sel, stats)));
     }
 
+    public Optional<CardinalityEstimator> resolve(Site site,Integer metric) {
+        return selectivityEstimatorResolver.resolve(site)
+                .flatMap(sel -> statisticsProvider.getStatistics(site)
+                        .map(stats -> new SimpleCardinalityEstimator(this, sel, stats,metric)));
+    }
+
 }
