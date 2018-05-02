@@ -30,7 +30,7 @@ public class VOIDStatistics extends VOIDBase implements Statistics {
         Value pVal = pattern.getPredicateVar().getValue();
         Value oVal = pattern.getObjectVar().getValue();
         IRI source = (IRI) site.getID();
-        System.out.println(sVal+ " "+pVal + " "+ oVal);
+
 
         StatsItemImpl statsItem = new StatsItemImpl(pattern);
 
@@ -58,26 +58,27 @@ public class VOIDStatistics extends VOIDBase implements Statistics {
 
         if (pVal != null) {
             pDatasets = getMatchingDatasetsOfPredicate((IRI) pVal);
-            //System.out.println("pDAtasets = " + pDatasets.size());
+            System.out.println("pDAtasets = " + pDatasets.size());
         }
         if (sVal != null && sVal instanceof IRI) {
             sDatasets = getMatchingDatasetsOfSubject((IRI) sVal);
-            //System.out.println("sDAtasets = " + sDatasets.size());
+            System.out.println("sDAtasets = " + sDatasets.size());
             //get the first (the deepest matching bucket (dataset));
-            if(sDatasets != null && sDatasets.size()>0){
-                Resource dataset = sDatasets.iterator().next();
-                sDatasets = new LinkedHashSet<Resource>();
-                sDatasets.add(dataset);
-            }
+//            if(sDatasets != null && sDatasets.size()>0){
+//                Resource dataset = sDatasets.iterator().next();
+//                sDatasets = new LinkedHashSet<Resource>();
+//                sDatasets.add(dataset);
+//            }
         }
         if(oVal != null){
             oDatasets = getMatchingDatasetsOfObject((IRI)oVal);
+            System.out.println("oDAtasets = " + oDatasets.size());
             //get the first (the deepest matching bucket (dataset));
-            if(oDatasets != null && oDatasets.size()>0){
-                Resource dataset = oDatasets.iterator().next();
-                oDatasets = new LinkedHashSet<Resource>();
-                oDatasets.add(dataset);
-            }
+//            if(oDatasets != null && oDatasets.size()>0){
+//                Resource dataset = oDatasets.iterator().next();
+//                oDatasets = new LinkedHashSet<Resource>();
+//                oDatasets.add(dataset);
+//            }
         }
 
 
@@ -86,23 +87,27 @@ public class VOIDStatistics extends VOIDBase implements Statistics {
             spoDatasets = new LinkedHashSet<Resource>(sDatasets);
         if(oDatasets != null && oDatasets.size()>0)
             spoDatasets = new LinkedHashSet<Resource>(oDatasets);
-        if(pDatasets != null && pDatasets.size()>0)
+        if(spoDatasets!=null && pDatasets != null && pDatasets.size()>0)
             spoDatasets.retainAll(pDatasets);
+        else if(pDatasets != null && pDatasets.size()>0)
+            spoDatasets = new LinkedHashSet<Resource>(pDatasets);
+
+        System.out.println(sVal+" "+" "+pVal+" "+oVal+spoDatasets.toString());
 
 
-        statsItem.setDistinctSubjects(getDistinctSubjects(spoDatasets));
-        statsItem.setDistinctPredicates(getDistinctPredicates(spoDatasets));
-        statsItem.setDistinctObjects(getDistinctObjects(spoDatasets));
-        statsItem.setMinSubjects(getMinSubjects(spoDatasets));
-        statsItem.setMinPredicates(getMinPredicates(spoDatasets));
-        statsItem.setMinObjects(getMinObjects(spoDatasets));
-        statsItem.setMaxSubjects(getMaxSubjects(spoDatasets));
-        statsItem.setMaxPredicates(getMaxPredicates(spoDatasets));
-        statsItem.setMaxObjects(getMaxObjects(spoDatasets));
 
         if (spoDatasets!= null && !spoDatasets.isEmpty()) { // datasets that match both the predicate and subject
 
-            System.out.println("edw1");
+            statsItem.setDistinctSubjects(getDistinctSubjects(spoDatasets));
+            statsItem.setDistinctPredicates(getDistinctPredicates(spoDatasets));
+            statsItem.setDistinctObjects(getDistinctObjects(spoDatasets));
+            statsItem.setMinSubjects(getMinSubjects(spoDatasets));
+            statsItem.setMinPredicates(getMinPredicates(spoDatasets));
+            statsItem.setMinObjects(getMinObjects(spoDatasets));
+            statsItem.setMaxSubjects(getMaxSubjects(spoDatasets));
+            statsItem.setMaxPredicates(getMaxPredicates(spoDatasets));
+            statsItem.setMaxObjects(getMaxObjects(spoDatasets));
+
             long d = 1;
             long max = 1;
             long min = 1;
@@ -127,15 +132,14 @@ public class VOIDStatistics extends VOIDBase implements Statistics {
         }
         else {
             long d = 1;
-            System.out.println("edw4");
+
             if (oVal != null)
                 d *= getDistinctObjects(datasets);
             if (pVal != null)
                 d *= getDistinctPredicates(datasets);
             if (sVal != null)
                 d *= getDistinctSubjects(datasets);
-            System.out.println ("Triples ="+getTriplesCount(datasets)+"dvc = "+d);
-            System.out.println(getTriplesCount(datasets)/d);
+
             if (d > 0 )
                 statsItem.setPatternCount(getTriplesCount(sDatasets) / d);
             else
@@ -564,20 +568,27 @@ public class VOIDStatistics extends VOIDBase implements Statistics {
 
         @Override
         public long getCardinality(int i) {
+            System.out.println("PatternCount "+patternCount+" CurrMax "+currMax+
+                    " CurrMin "+currMin+" "+Math.log10((double)currMax/(double)patternCount));
             switch (i){
-                case 0: System.out.println("EEEEEEEEEEEEEEEEEE"+0);
-                        return patternCount;
-                case 1: System.out.println("EEEEEEEEEEEEEEEEEE"+1);
-                        return patternCount + Math.round( (double)patternCount * 0.3 );
-                case 2: System.out.println("EEEEEEEEEEEEEEEEEE"+2);
-                        return patternCount + Math.round( (double)currMax * 0.05 );
-                case 3: System.out.println("EEEEEEEEEEEEEEEEEE"+3);
+                case 0: return patternCount;
+                case 1: double log2 = Math.log((double)currMax/(double)patternCount)/Math.log(2);
                         return patternCount +
+                        Math.round((double)currMax*(log2/(double)100));
+                case 2: return patternCount +
                         Math.round((double)currMax*(Math.log((double)currMax/(double)patternCount)/(double)100) );
-                case 4: System.out.println("EEEEEEEEEEEEEEEEEE"+4);
-                        return patternCount + currMin;
-                case 5: System.out.println("EEEEEEEEEEEEEEEEEE"+5);
-                        return patternCount + Math.round( (double)currMax * 0.1 );
+                case 3: return patternCount+
+                        Math.round((double)currMax*(Math.log10((double)currMax/(double)patternCount)/(double)100) );
+//                case 1: return patternCount +
+//                        Math.round( (double)currMax * 0.02 );
+//                case 2: return patternCount +
+//                        Math.round( (double)currMax * 0.05 );
+//                case 3: return patternCount +
+//                        Math.round( (double)currMax * 0.1 );
+//                case 4: return patternCount +
+//                        Math.round( (double)currMax * 0.2 );
+//                case 5: return patternCount +
+//                        Math.round( (double)currMax * 0.5 );
                 default: return patternCount;
             }
         }

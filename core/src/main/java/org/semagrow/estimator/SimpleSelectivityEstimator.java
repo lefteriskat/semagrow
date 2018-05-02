@@ -42,7 +42,7 @@ public class SimpleSelectivityEstimator implements SelectivityEstimator {
         // TODO: consult page 6 of http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.129.3162&rep=rep1&type=pdf
         double sel = 1;
         for (String var : varNames)
-            sel *= getVarSelectivity(var, join);
+            sel *= Math.min(getVarSelectivity(var, join.getLeftArg()),getVarSelectivity(var, join.getRightArg()));
 
         return sel;
     }
@@ -163,7 +163,8 @@ public class SimpleSelectivityEstimator implements SelectivityEstimator {
     public double getVarSelectivity(String varName, BinaryTupleOperator expr) {
         double leftSel = getVarSelectivity(varName, expr.getLeftArg());
         double rightSel = getVarSelectivity(varName, expr.getRightArg());
-        return Math.min(leftSel, rightSel);
+        return Math.max(leftSel, rightSel);
+
     }
 
     /**

@@ -50,12 +50,24 @@ public class CliMain {
          */
         String repositoryConfig = args[0];
 
-        String queryString = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+        /*String queryString = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "SELECT ?category WHERE {" +
                 "{<http://dbpedia.org/resource/Tamim_Bashir> skos:subject ?category .}\n" +
                 "UNION {<http://dbpedia.org/resource/John_Pennington_Harman> skos:subject ?category .}\n" +
-                "}";
-
+                "}";*/
+        //<http://dbpedia.org/resource/Category:English-language_films>
+        //<http://dbpedia.org/resource/Category:Brazilian_footballers>
+        //SELECT ?o,COUNT(*) as ?c FROM <http://dbpedia3.2.org> WHERE { ?s skos:subject ?o   . } GROUP BY ?o ORDER BY DESC(?c)
+        String queryString = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX dbo: <http://dbpedia.org/ontology/>         \n" +
+                "PREFIX foaf: <http://xmlns.com/foaf/0.1/>        \n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>        \n" +
+                "SELECT * FROM <http://dbpedia3.2.org> WHERE {     \n" +
+                "?s skos:subject <http://dbpedia.org/resource/Category:Living_people>.   \n" + //P1
+                "?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Artist>.  \n" + //P2
+                "?s foaf:givenname ?name.         \n" + //P3
+                //"?s foaf:surname ?surname.        \n" +
+                "}  ";
         String resultFile = args[1];
 
         logger.debug("Using configuration from {}", repositoryConfig);
@@ -81,12 +93,14 @@ public class CliMain {
             Plan tempPlan ;
             StringBuilder result = new StringBuilder();
             result.append("CurrEst\tMetric1\tMetric2\tMteric3\tMetric4\tMetric5\n");
-            for(int i = 0; i<=5 ; i++) {
+            for(int i = 0; i<=3 ; i++) {
                 if(i==0){
                     originalPlan = compiler.compile(new QueryRoot(q.getTupleExpr()),query.getDataset(),query.getBindings(),i);
+                    System.out.println(i+"------>"+originalPlan.toString());
                     result.append(originalPlan.getProperties().getCardinality().toString()+"\t\t");
                 }else{
                     tempPlan = compiler.compile(new QueryRoot(q.getTupleExpr()),query.getDataset(),query.getBindings(),i);
+                    System.out.println(i+"------>"+tempPlan.toString());
                     if(tempPlan.equals(originalPlan)){
                         result.append("True "+tempPlan.getProperties().getCardinality().toString()+"\t");
                     }else{

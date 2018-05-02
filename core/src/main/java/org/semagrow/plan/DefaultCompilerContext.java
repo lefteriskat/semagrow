@@ -67,7 +67,7 @@ public class DefaultCompilerContext implements CompilerContext {
             props.setDataProperties(new DataProperties());
 
         Site s = props.getSite();
-        System.out.println("TELOS EDW");
+
         cardinalityEstimatorResolver.resolve(s,metric)
                 .ifPresent(ce -> props.setCardinality(ce.getCardinality(physicalExpr)));
 
